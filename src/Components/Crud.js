@@ -108,22 +108,21 @@ class Crud extends Component {
 
   //save new value on click save
   handleSave = id => {
-    console.log(this.state.list[id].form.firstName);
-    let firstName = this.state.list[id].form.firstName;
-    let lastName = this.state.list[id].form.lastName;
-    let age = this.state.list[id].form.age;
-    if (!firstName || !lastName || !age) {
-      alert("fields sholud not be empty");
-    } else {
+    //console.log(this.state.list[id].form.firstName);
+    const { firstName, lastName, age } = this.state.list[id].form;
+
+    let result = this.validateForm(this.state.list[id].form);
+
+    if (result) {
       this.setState(prevState => {
         return {
           list: {
             ...prevState.list,
             [id]: {
               ...prevState.list[id],
-              firstName: firstName,
-              lastName: lastName,
-              age: age,
+              firstName,
+              lastName,
+              age,
               editable: false
             }
           }
@@ -133,7 +132,7 @@ class Crud extends Component {
   };
 
   //delete element
-  handleDelete = (id, val) => {
+  handleDelete = id => {
     const updatedList = { ...this.state.list };
     console.log(`id: ${id}`);
     console.log(this.state.list);
@@ -153,7 +152,7 @@ class Crud extends Component {
       return {
         list: {
           ...prevState.list,
-          [id]: { ...this.state.list[id], editable: false }
+          [id]: { ...prevState.list[id], editable: false }
         }
       };
     });
@@ -168,10 +167,10 @@ class Crud extends Component {
           ...prevState.list,
           [id]: {
             id,
-            ...this.state.form,
+            ...prevState.form,
             editable: false,
             form: {
-              ...this.state.form
+              ...prevState.form
             }
             /*...prevState.list,
           [id]: { id, ...this.state.form, editable: false }*/
@@ -181,8 +180,8 @@ class Crud extends Component {
     });
   }
   //validation form
-  validateForm() {
-    const { firstName, lastName, age } = this.state.form;
+  validateForm(list) {
+    const { firstName, lastName, age } = list;
 
     if (!firstName || !lastName || !age) {
       alert("All fields Are compulsary");
@@ -197,7 +196,7 @@ class Crud extends Component {
 
   onAddItem = () => {
     //execution of validate and update
-    if (this.validateForm()) {
+    if (this.validateForm(this.state.form)) {
       this.addToListFromForm();
     }
   };
